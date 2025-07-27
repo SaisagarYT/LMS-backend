@@ -9,15 +9,12 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use('/api/students',studentRoute);
 
 connectDB()
 .then(() => console.log("succesful"))
 .catch(() => console.log("unsuccessful"));
 
-app.use('/',(req,res) =>{
-    res.send("hello");
-})
+app.use('/api/students',studentRoute);
 
 const PORT = process.env.PORT;
 

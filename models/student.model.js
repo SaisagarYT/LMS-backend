@@ -20,13 +20,13 @@ const studentSchema = mongoose.Schema({
         required:true,
     },
     studentBirthDate:{
-        type:String,
+        type:Date,
         required:true,
     },
     phoneNumber:{
         type:String,
         required:true,
     }
-})
+},{timestamps:true});
 
 module.exports = mongoose.model('Student',studentSchema);

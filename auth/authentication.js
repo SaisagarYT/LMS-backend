@@ -11,3 +11,5 @@ const userAuthentication = () =>{
         console.log(err.message);
     }
 }
+
+module.exports = userAuthentication;
