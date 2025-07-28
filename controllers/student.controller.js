@@ -5,6 +5,9 @@ const bcrypt = require('bcrypt');
 
 const registerStudent = async(req,res) =>{
     const {studentId,studentName,studentEmail,studentPassword,studentBirthDate,phoneNumber} = req.body;
+    if(studentId == '' || studentName == '' || studentEmail == "" || studentPassword == "" || studentBirthDate == "" || phoneNumber == ""){
+        return res.status(300).json({message:"Insufficient user credentials"});
+    }
     try{
         const student = await Students.findOne({studentEmail});
 
@@ -19,7 +22,7 @@ const registerStudent = async(req,res) =>{
             studentName:studentName,
             studentEmail:studentEmail,
             studentPassword:hashedPassword,
-            studentBirthDate: new Date(studentBirthDate).toLocaleString(),
+            studentBirthDate: new Date(studentBirthDate),
             phoneNumber:phoneNumber
         })
         await newStudent.save();
@@ -35,6 +38,9 @@ const registerStudent = async(req,res) =>{
 
 const signInStudent = async(req,res) =>{
     const {studentEmail,studentPassword} = req.body;
+    if(studentEmail == "" || studentPassword == ""){
+        return res.status(300).json({message:"Insufficient user credentials"});
+    }
     try{
         const student = await Students.findOne({studentEmail});
         if(!student){
@@ -43,7 +49,7 @@ const signInStudent = async(req,res) =>{
         if(student && await bcrypt.compare(studentPassword, student.studentPassword)){
             return res.status(200).json({student,token:generateToken(student.id)});
         }
-        return res.status(404).json({message:"User credentials are incorrect!"});
+        return res.status(402).json({message:"User credentials are incorrect!"});
     }
     catch(err){
         return res.status(500).json({error:"Internal server error at signin"});
