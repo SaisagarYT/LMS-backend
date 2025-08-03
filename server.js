@@ -3,6 +3,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const studentRoute = require('./routes/student.route');
 const courseRoute = require('./routes/course.route');
+const likedCourse = require('./routes/likedCourse.route');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -17,6 +18,7 @@ connectDB()
 
 app.use('/api/students',studentRoute);
 app.use('/api/course',courseRoute);
+app.use('/api/likedCourse/',likedCourse);
 
 const PORT = process.env.PORT;
 

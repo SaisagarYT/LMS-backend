@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 const referenceSchema = mongoose.Schema({
     author:{type:String,required:true},
+    techStack:{
+        type:[String],
+        requied:true,
+        default:'Theory'
+    },
     books:{
         type:[String],
         required:true,

@@ -26,13 +26,13 @@ const createCourse = async(req,res) =>{
 }
 
 const removeCourse = async(req,res) =>{
-    const {courseName} = req.body;
+    const {courseID} = req.params;
 
     try{
-        if(courseName == ""){
-            return res.status(303).json({message:"Provide the course name"});
+        if(courseID === ""){
+            return res.status(303).json({message:"No course id was found!"});
         }
-        const isExist = await Course.find({courseName});
+        const isExist = await Course.findOne({courseID});
         if(!isExist){
             return res.status(400).json({message:"Course not found in the databse"});
         }
@@ -41,6 +41,42 @@ const removeCourse = async(req,res) =>{
     }
     catch(err){
         return res.status(500).json({error:err});
+    }
+}
+
+const updateCourse = async(req,res) =>{
+    const {courseId} = req.params;
+    const {courseThumbnail,courseName,courseDescription,abstract,bibliography} = req.body;
+    if(courseThumbnail === "" || courseName === "" || courseDescription === "" || abstract === "" || bibliography === ""){
+        return res.status(400).json({message:"Fields are empty"});
+    }
+    const updateCourse = {
+        courseThumbnail,
+        courseName,
+        courseDescription,
+        abstract,
+        bibliography
+    };
+    try{
+        if(courseId === "" || !courseId){
+            return res.status(303).json({message:"No courseId was found"});
+        }
+        const course = await Course.findById(courseId);
+        if(!course){
+            return res.status(404).json({message:"Course not found in DB"});
+        }
+        const updatedCourse = await Course.findByIdAndUpdate(
+            {courseId},
+            {$set:updateCourse},
+            {new:true},
+        );
+        if(!updatedCourse){
+            return res.status(400).json({message:"Couorse not updated"});
+        }
+        return res.status(200).json({message:"course successfully updated",update:updatedCourse});
+    }
+    catch(err){
+        return res.status(500).json({error:err.message});
     }
 }
 
@@ -57,4 +93,4 @@ const displayCourses = async(req,res) =>{
     }
 }
 
-module.exports = {createCourse,removeCourse,displayCourses};
+module.exports = {createCourse,removeCourse,displayCourses,updateCourse};
