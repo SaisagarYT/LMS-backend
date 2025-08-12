@@ -2,17 +2,16 @@ const LikedCourse = require('../models/likedCourse.model');
 const Course = require('../models/course.model');
 
 const addLikedCourses = async(req,res) =>{
-    const {courseId,courseIsLiked} = req.body;
+    const {courseId} = req.body;
     try{
-        const response = await LikedCourse.findOne({courseId});
+        const response = await LikedCourse.findOne({courseId:courseId});
         if(response){
             return res.status(400).json({message:"The course already present in the DB"});
         }
-        const likedCourse = await LikedCourse.create({
+        const likedCourse = await LikedCourse.create({ 
             courseId:courseId,
-            courseIsLiked:courseIsLiked
         });
-        return res.status(200).json({message:"Course is added to like list",likedCourse});
+        return res.status(200).json(likedCourse);
     }
     catch(err){
         return res.status(500).json({message:"Internal server error in likedcourse"});
@@ -21,13 +20,12 @@ const addLikedCourses = async(req,res) =>{
 
 const removeLikedCourse = async(req,res) =>{
     const {courseId} = req.body;
-
     try{
-        const course = await LikedCourse.findById(courseId);
+        const course = await LikedCourse.findOne({courseId:courseId});
         if(!course){
             return res.status(400).json({message:"The course not found"});
         }
-        await LikedCourse.findOneAndDelete(course);
+        await LikedCourse.findOneAndDelete({courseId});
         return res.status(200).json({message:"Successfully deleted"});
     }
     catch(err){
@@ -35,7 +33,7 @@ const removeLikedCourse = async(req,res) =>{
     }
 }
 
-const showLikedCoure = async(req,res) =>{
+const showLikedCourse = async(req,res) =>{
     try{
         const likedCourse = await LikedCourse.find();
         if(!likedCourse || likedCourse.length === 0){
@@ -44,7 +42,7 @@ const showLikedCoure = async(req,res) =>{
         return res.status(200).json({likedCourse});
     }
     catch(err){
-        return req.status(500).json({message:"Internal server error at showLikedCourse"});
+        return res.status(500).json({message:"Internal server error at showLikedCourse"});
     }
 }
 
@@ -61,4 +59,4 @@ const collectLikedCourse = async(req,res) =>{
         return res.status(500).json({message:"Internal server error"});
     }
 }
-module.exports = {addLikedCourses,showLikedCoure,collectLikedCourse,removeLikedCourse};
+module.exports = {addLikedCourses,showLikedCourse,collectLikedCourse,removeLikedCourse};

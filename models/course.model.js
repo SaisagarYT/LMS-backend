@@ -43,6 +43,10 @@ const courseSchema = mongoose.Schema({
         required:true,
     },
     bibliography:[referenceSchema],
+    price:{
+        type:String,
+        default:"49"
+    }
 },{timestamps:true});
 
 module.exports = mongoose.model('Course',courseSchema);
