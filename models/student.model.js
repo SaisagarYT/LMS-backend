@@ -28,5 +28,4 @@ const studentSchema = mongoose.Schema({
         required:true,
     }
 },{timestamps:true});
-
 module.exports = mongoose.model('Student',studentSchema);

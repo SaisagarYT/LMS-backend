@@ -21,7 +21,7 @@ const moduleSchema = mongoose.Schema({
         type:String,
         required:true,
     },
-    is_preview:{
+    isPreview:{
         type:Boolean,
         required:true,
     },

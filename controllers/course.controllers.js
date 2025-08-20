@@ -1,7 +1,7 @@
 const Course = require('../models/course.model');
 
 const createCourse = async(req,res) =>{
-    const {courseThumbnail,courseName,courseDescription,abstract,bibliography} = req.body;
+    const {categoryId,courseThumbnail,courseName,courseDescription,abstract,bibliography} = req.body;
 
     if(courseThumbnail == "" || courseName == "" || courseDescription == "" || abstract == "" || bibliography == ""){
         return res.status(302).json({message:"Enter all the course details"});
@@ -12,6 +12,7 @@ const createCourse = async(req,res) =>{
             return res.status(400).json({message:"Course already exist in Database"});
         }
         const newCourse = await Course.create({
+            categoryId:categoryId,
             courseThumbnail:courseThumbnail,
             courseName:courseName,
             courseDescription:courseDescription,
@@ -21,22 +22,20 @@ const createCourse = async(req,res) =>{
         return res.status(200).json(newCourse);
     }
     catch(err){
-        return res.status(500).json({error:err});
+        return res.status(500).json({error:err.message});
     }
 }
 
 const removeCourse = async(req,res) =>{
-    const {courseID} = req.params;
-
+    const courseId = req.params.courseId;
     try{
-        if(courseID === ""){
+        if(!courseId){
             return res.status(303).json({message:"No course id was found!"});
         }
-        const isExist = await Course.findOne({courseID});
-        if(!isExist){
+        const deletedCourse = await Course.findByIdAndDelete(courseId);   
+        if(!deletedCourse){
             return res.status(400).json({message:"Course not found in the databse"});
         }
-        await Course.findOneAndDelete(isExist);
         return res.status(200).json({message:"Course removed successfully"});
     }
     catch(err){
@@ -93,4 +92,21 @@ const displayCourses = async(req,res) =>{
     }
 }
 
-module.exports = {createCourse,removeCourse,displayCourses,updateCourse};
+const fetchCourseAccordingToCategory = async(req,res) =>{
+    const {categoryId} = req.body;
+    if(!categoryId){
+        return res.status(404).json({message:"Provide the categoryId"});
+    }
+    try{
+        const courses = await Course.find({categoryId:categoryId});
+        if(!courses){
+            return res.status(400).json({message:"No course found with this category!"});
+        }
+        return res.status(200).json(courses);
+    }
+    catch(err){
+        return res.status(500).json({Error:"Internal server error"});
+    }
+}
+
+module.exports = {createCourse,removeCourse,displayCourses,updateCourse,fetchCourseAccordingToCategory};

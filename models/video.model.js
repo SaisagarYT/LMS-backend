@@ -23,7 +23,7 @@ const videoSchema = mongoose.Schema({
     },
     title:{
         type:String,
-        required:true,       
+        required:true,     
     },
     description:{
         type:String,
@@ -56,6 +56,6 @@ const videoSchema = mongoose.Schema({
         type:[fileSchema],
         default:[]
     }
-},{timestamps:true})
+},{timestamps:true});
 
 module.exports = mongoose.model('Video',videoSchema);
