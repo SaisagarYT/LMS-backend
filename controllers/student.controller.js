@@ -1,4 +1,4 @@
-const generateToken = require('../../../Ecommarce/E-commerce/ecommerce-backend/utils/generateToken');
+const generateToken = require('../utils/token');
 const userAuthentication = require('../auth/authentication');
 const Students = require('../models/student.model');
 const bcrypt = require('bcrypt');

@@ -6,6 +6,7 @@ const courseRoute = require('./routes/course.route');
 const likedCourse = require('./routes/likedCourse.route');
 const categoryRoute = require('./routes/category.route');
 const moduelRoute = require('./routes/module.route');
+const videoRoute = require('./routes/video.route');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use('/api/course',courseRoute);
 app.use('/api/likedCourse/',likedCourse);
 app.use('/api/category',categoryRoute);
 app.use('/api/module',moduelRoute);
+app.use('/api/videos',videoRoute);
 
 const PORT = process.env.PORT;
 

@@ -26,4 +26,18 @@ const createModule = async(req,res) =>{
     }
 }
 
-module.exports = {createModule}
+const displayModuleBasedOnCourseId = async(req,res) =>{
+    const courseId = req.params.courseId;
+    try{
+        const modules = await Module.find({courseId});
+        if(modules.length == 0 || !modules){
+            return res.status(400).json({message:"No module was found in the DB"});
+        }
+        return res.status(200).json(modules);
+    }
+    catch(err){
+        return res.status(500).json({Error:err.message});
+    }
+}
+
+module.exports = {createModule,displayModuleBasedOnCourseId};

@@ -30,7 +30,7 @@ const videoSchema = mongoose.Schema({
         required:true,
     },
     videoUrl:{
-        type:Number,
+        type:String,
         required:true,
     },
     thumbnailUrl:{
@@ -54,7 +54,6 @@ const videoSchema = mongoose.Schema({
     },
     resources:{
         type:[fileSchema],
-        default:[]
     }
 },{timestamps:true});
 
