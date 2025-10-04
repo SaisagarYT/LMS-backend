@@ -41,7 +41,8 @@ const signInStudent = async(req,res) =>{
         return res.status(300).json({message:"Insufficient user credentials"});
     }
     try{
-        const student = await Students.findOne({studentEmail});
+        const students = await Students.find({studentEmail});
+        const student = students[0];
         if(!student){
             return res.status(400).json({message:"User not exist in the DB"});
         }
@@ -51,13 +52,14 @@ const signInStudent = async(req,res) =>{
         return res.status(402).json({message:"User credentials are incorrect!"});
     }
     catch(err){
-        return res.status(500).json({error:"Internal server error at signin"});
+        return res.status(500).json({error:err.message});
     }
 }
 
 const getAllStudents = async(req,res) =>{
+    const id = req.params.id;
     try{
-        const student = await Students.find();
+        const student = await Students.find({conversation:id});
         if(!student){
             return res.status(400).json({message:"No students are found"});
         }
