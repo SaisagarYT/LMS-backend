@@ -11,8 +11,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+<<<<<<< HEAD
     "@google/genai": "^1.22.0",
     "@google/generative-ai": "^0.24.1",
+=======
+    "@google/genai": "^1.19.0",
+>>>>>>> bedc226360c18c93507b4e1a12621f9d87b37384
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
