@@ -9,6 +9,10 @@ const conversationSchema = mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    title:{
+        type:String,
+        required:true,
+    }
     // messages: [
     //     {
     //         type: mongoose.Schema.Types.ObjectId,

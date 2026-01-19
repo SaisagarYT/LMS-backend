@@ -5,6 +5,6 @@ const route = express.Router();
 
 route.post('/message/:id',messageChatbot);
 route.get('/chat/:id',getMessageById);
-route.post('/conversation/:id',getConversationMessages);
+route.get('/conversation',getConversationMessages);
 
 module.exports = route;

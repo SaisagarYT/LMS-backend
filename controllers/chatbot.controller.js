@@ -7,61 +7,71 @@ const ai = new GoogleGenAI({apiKey:process.env.GEMINIAPI});
 const messageChatbot = async (req, res) => {
     const message = req.body;
     const id = req.params.id;
-   if(id === "new"){
+    try{
+        if(id === "new"){
 
-    const conversationId = new Conversation();
-    conversationId.save();
+            const conversationId = new Conversation({
+                title:message.content
+            });
+            conversationId.save();
 
-    const response = await ai.models.generateContent({
-        model:"gemini-2.5-flash",
-        contents: message.content || "who is president of america?"
-    });
+            const response = await ai.models.generateContent({
+                model:"gemini-2.5-flash",
+                contents: message.content || "who is president of america?"
+            });
 
-    const userModel = new Message({
-        conversation:conversationId,
-        role:"user",
-        content:message.content,
-    })
-    userModel.save();
-    
-    const assistentModel = new Message({
-        conversation:conversationId,
-        role:"assitent",
-        content:response.text,
-    });
-    assistentModel.save();
-    return res.status(200).json([userModel,assistentModel]);
-   }
-   else{
-    const conversationId = await Conversation.findById(id);
-    if(!conversationId){
-        return res.status(400).json({message:"No id found in the db"});
+            const userModel = new Message({
+                conversation:conversationId,
+                role:"user",
+                content:message.content,
+            })
+            userModel.save();
+            
+            const assistentModel = new Message({
+                conversation:conversationId,
+                role:"assitent",
+                content:response.text,
+            });
+            assistentModel.save();
+            return res.status(200).json([userModel,assistentModel]);
+        }
+        else{
+            const conversationId = await Conversation.findById(id);
+            if(!conversationId){
+                return res.status(400).json({message:"No id found in the db"});
+            }
+            const response = await ai.models.generateContent({
+                model:"gemini-2.5-flash",
+                contents: message.content || "who is president of america?"
+            });
+
+            const userModel = new Message({
+                conversation:conversationId,
+                role:"user",
+                content:message.content,
+            })
+            userModel.save();
+            
+            const assistentModel = new Message({
+                conversation:conversationId,
+                role:"assitent",
+                content:response.text,
+            });
+            assistentModel.save();
+            const conversations = await Message.find({conversation:conversationId});
+            return res.status(200).json(conversations);
+        }
     }
-    const response = await ai.models.generateContent({
-        model:"gemini-2.5-flash",
-        contents: message.content || "who is president of america?"
-    });
-
-    const userModel = new Message({
-        conversation:conversationId,
-        role:"user",
-        content:message.content,
-    })
-    userModel.save();
-    
-    const assistentModel = new Message({
-        conversation:conversationId,
-        role:"assitent",
-        content:response.text,
-    });
-    assistentModel.save();
-    const conversations = await Message.find({conversation:conversationId});
-    return res.status(200).json(conversations);
+   catch(err){
+    return res.status(500).json({error:err.message});
    }
 };
 
 const getMessageById = async(req,res) =>{
     const id = req.params.id;
+    if(id == null || id == '' || !id){
+        return res.status(404).json({message:"No id found"});
+    }
     try{
         const response = await Message.find({conversation:id});
         if(!response){
