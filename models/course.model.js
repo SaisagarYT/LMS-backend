@@ -22,8 +22,7 @@ const referenceSchema = mongoose.Schema({
         required:true,
         default:[]
     }
-})
-
+});
 const courseSchema = mongoose.Schema({
     categoryId:{
         type:mongoose.Schema.Types.ObjectId,

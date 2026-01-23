@@ -6,5 +6,6 @@ const route = express.Router();
 route.post('/add',addNewCategory);
 route.get('/details',getCategoryDetails);
 route.delete('/remove',removeCategory);
+// route.put('/update',)
 
 module.exports = route;

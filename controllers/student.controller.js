@@ -70,6 +70,53 @@ const getAllStudents = async(req,res) =>{
     }
 }
 
+const updateStudentDetails = async(req,res) =>{
+    const userId = req.params.id;
+    const {studentName,studentEmail,studentBirthDate,phoneNumber} = req.body;
+
+    const student = await Students.findById({_id:userId});
+    if(!student){
+        return res.status(400).json({
+            success:false,
+            error:"No student details are found!"
+        });
+    }
+    
+    try{
+        if(!userId){
+            return res.status(404).json({
+                success:false,
+                error:"There is a problem in id"
+            });
+        }
+
+        if(studentEmail){
+            student.studentEmail = studentEmail;
+        }
+        if(studentName){
+            student.studentName = studentName;
+        }
+        if(studentBirthDate){
+            student.studentBirthDate = studentBirthDate;
+        }
+        if(phoneNumber){
+            student.phoneNumber = phoneNumber;
+        }
+
+        const newStudent = await student.save();
+        return res.status(200).json({
+            success:true,
+            newStudent
+        });
+    }
+    catch(err){
+        return res.status(500).json({
+            success:false,
+            error:err.message
+        });
+    }
+}
+
 const studentDetails = async(req,res) =>{
     const {id} = req.body;
     try{
@@ -98,6 +145,5 @@ const removeStudent = async(req,res) =>{
         return res.status(500).json({Error:err.message});
     }
 }
-module.exports = {registerStudent,signInStudent,getAllStudents,studentDetails,removeStudent};
-
+module.exports = {registerStudent,signInStudent,getAllStudents,studentDetails,removeStudent,updateStudentDetails};
 

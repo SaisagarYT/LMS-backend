@@ -1,4 +1,5 @@
 const Module = require('../models/module.model');
+const Course = require('../models/course.model');
 
 const createModule = async(req,res) =>{
     const {courseId,title,description,order,duration,isPreview} = req.body;
@@ -25,6 +26,25 @@ const createModule = async(req,res) =>{
         return res.status(500).json({Error:err.message});
     }
 }
+
+// const deleteModule = async(req,res) =>{
+//     const modeuleId = req.body;
+//     if(!modeuleId){
+//         return res.status(404).json({
+//             success:false,
+//             message:"Module ID is required"
+//         });
+//     }
+//     try{
+//         const course = await Course.findById({modeuleId});
+//         if(!course){
+//             return res.status()
+//         }
+//     }
+//     catch(err){
+//         return res.status()
+//     }
+// }
 
 const displayModuleBasedOnCourseId = async(req,res) =>{
     const courseId = req.params.courseId;

@@ -18,6 +18,25 @@ const addNewCategory = async(req,res) =>{
     }
 }
 
+/* const updateCourse = async(req,res) =>{
+    const userId = req.params.id;
+    if(!userId){
+        return res.status(404).json({
+            success:false,
+            message:"Not found the course!"
+        });
+    }
+    try{
+        const 
+    }
+    catch(err){
+        return res.status(500).json({
+            success:false,
+            error:err.message
+        });
+    }
+}*/
+
 const removeCategory = async(req,res) =>{
     const {categoryId} = req.body;
     try{

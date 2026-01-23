@@ -6,4 +6,5 @@ const route = express.Router();
 route.post('/create',createModule);
 route.get('/display/:courseId',displayModuleBasedOnCourseId);
 
+
 module.exports = route;
