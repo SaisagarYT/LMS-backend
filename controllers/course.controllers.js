@@ -65,7 +65,7 @@ const updateCourse = async(req,res) =>{
             return res.status(404).json({message:"Course not found in DB"});
         }
         const updatedCourse = await Course.findByIdAndUpdate(
-            {courseId},
+            courseId,
             {$set:updateCourse},
             {new:true},
         );
@@ -81,14 +81,29 @@ const updateCourse = async(req,res) =>{
 
 const displayCourses = async(req,res) =>{
     try{
-        const courses = await Course.find();
+        const courses = await Course.find().populate('categoryId');
         if(!courses || courses.length == 0){
-            return res.status(400).json({message:"No courses are present in DB"});
+            return res.status(404).json({message:"No courses are present in DB", courses: []});
         }
         return res.status(200).json({courses});
     }
     catch(err){
-        return res.status(500).json({error:"Internal server error"});
+        console.error('Error fetching courses:', err);
+        return res.status(500).json({error: err.message || "Internal server error"});
+    }
+}
+
+const getCourseById = async(req,res) =>{
+    const {id} = req.params;
+    try{
+        const course = await Course.findById(id);
+        if(!course){
+            return res.status(404).json({message:"Course not found"});
+        }
+        return res.status(200).json({course});
+    }
+    catch(err){
+        return res.status(500).json({error:err.message});
     }
 }
 
@@ -109,4 +124,4 @@ const fetchCourseAccordingToCategory = async(req,res) =>{
     }
 }
 
-module.exports = {createCourse,removeCourse,displayCourses,updateCourse,fetchCourseAccordingToCategory};
+module.exports = {createCourse,removeCourse,displayCourses,updateCourse,fetchCourseAccordingToCategory,getCourseById};

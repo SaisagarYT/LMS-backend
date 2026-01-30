@@ -4,7 +4,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "seed": "node seeds/index.js",
+    "seed:categories": "node seeds/seed-categories.js",
+    "seed:courses": "node seeds/seed-courses.js",
+    "seed:modules": "node seeds/seed-modules.js",
+    "seed:enrollments": "node seeds/seed-enrollments.js"
   },
   "keywords": [],
   "author": "",

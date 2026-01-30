@@ -76,8 +76,7 @@ const updateStudentDetails = async(req,res) =>{
 
     const student = await Students.findById({_id:userId});
     if(!student){
-        return res.status(400).json({
-            success:false,
+        return res.status(400).json({            success:false,
             error:"No student details are found!"
         });
     }

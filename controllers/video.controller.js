@@ -30,17 +30,15 @@ const createVideo = async(req,res) =>{
     }
 }
 
-
-
 const getVideoBasedOnModule = async(req,res) =>{
-    const {moduleId} = req.body;
+    const moduleId = req.params.moduleId || req.body.moduleId;
     try{
-        const video = await Video.find({moduleId});
         if(moduleId == null || moduleId == undefined){
-            return res.status(404).json({message:moduleId});
+            return res.status(404).json({message:"Module ID is required"});
         }
-        if(!video){
-            return res.status(400).json({message:"No video present the module"});
+        const video = await Video.find({moduleId});
+        if(!video || video.length === 0){
+            return res.status(404).json({message:"No video present for the module"});
         }
         return res.status(200).json(video);
     }

@@ -3,6 +3,7 @@ const { createVideo, getVideoBasedOnModule } = require('../controllers/video.con
 const route = express.Router();
 
 route.post('/create',createVideo);
+route.get('/display/:moduleId',getVideoBasedOnModule);
 route.post('/display',getVideoBasedOnModule);
 
 module.exports = route;

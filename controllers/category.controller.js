@@ -55,13 +55,29 @@ const removeCategory = async(req,res) =>{
 const getCategoryDetails = async(req,res) =>{
     try{
         const category = await Category.find();
-        if(!category){3
+        if(!category || category.length === 0){
             return res.status(400).json({message:"No course found!"});
         }
         return res.status(200).json(category);
     }
     catch(err){
         return res.status(500).json({message:err.message});
+    }
+}
+
+const updateCategory = async(req,res) =>{
+    const {categoryId} = req.body;
+    try{
+        const category = await Category.find({_id:categoryId});
+        if(!categoryId){
+            return res.status(404).json({})
+        }
+    }
+    catch(err){
+        return res.status(500).json({
+            success:false,
+            error:err.message
+        })
     }
 }
 module.exports = {addNewCategory,removeCategory,getCategoryDetails};
