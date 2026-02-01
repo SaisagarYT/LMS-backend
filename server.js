@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const connectDB = require('./config/db');
 const studentRoute = require('./routes/student.route');
 const courseRoute = require('./routes/course.route');
@@ -24,6 +25,9 @@ const corsOptions = {
 
 app.use(express.json());
 app.use(cors(corsOptions));
+
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 connectDB()
 .then(() => console.log("Database connected successfully"))

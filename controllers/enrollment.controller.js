@@ -47,7 +47,16 @@ const getStudentEnrollments = async (req, res) => {
             .populate('courseId')
             .sort({ enrolledAt: -1 });
 
-        return res.status(200).json({ enrollments });
+        // Convert Mongoose Maps to plain objects for each enrollment
+        const enrollmentsWithProgress = enrollments.map(enrollment => {
+            const enrollmentObj = enrollment.toObject();
+            if (enrollmentObj.videoProgress instanceof Map) {
+                enrollmentObj.videoProgress = Object.fromEntries(enrollmentObj.videoProgress);
+            }
+            return enrollmentObj;
+        });
+
+        return res.status(200).json({ enrollments: enrollmentsWithProgress });
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }
@@ -116,10 +125,17 @@ const getEnrollmentDetails = async (req, res) => {
             .populate('completedVideos');
 
         if (!enrollment) {
-            return res.status(404).json({ message: "Enrollment not found" });
+            // Return null instead of 404 to indicate no enrollment (used for checking enrollment status)
+            return res.status(200).json({ enrollment: null });
         }
 
-        return res.status(200).json({ enrollment });
+        // Convert Mongoose Map to plain object for videoProgress
+        const enrollmentObj = enrollment.toObject();
+        if (enrollmentObj.videoProgress instanceof Map) {
+            enrollmentObj.videoProgress = Object.fromEntries(enrollmentObj.videoProgress);
+        }
+
+        return res.status(200).json({ enrollment: enrollmentObj });
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }

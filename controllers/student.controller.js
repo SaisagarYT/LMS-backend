@@ -72,7 +72,7 @@ const getAllStudents = async(req,res) =>{
 
 const updateStudentDetails = async(req,res) =>{
     const userId = req.params.id;
-    const {studentName,studentEmail,studentBirthDate,phoneNumber} = req.body;
+    const {studentName,studentEmail,studentBirthDate,phoneNumber,location,district,bio,skills} = req.body;
 
     const student = await Students.findById({_id:userId});
     if(!student){
@@ -100,6 +100,28 @@ const updateStudentDetails = async(req,res) =>{
         }
         if(phoneNumber){
             student.phoneNumber = phoneNumber;
+        }
+        if(location){
+            student.location = location;
+        }
+        if(district){
+            student.district = district;
+        }
+        if(bio){
+            student.bio = bio;
+        }
+        if(skills){
+            // Parse skills if it's a JSON string
+            try {
+                student.skills = typeof skills === 'string' ? JSON.parse(skills) : skills;
+            } catch (e) {
+                student.skills = skills;
+            }
+        }
+        
+        // Handle profile image upload
+        if(req.file){
+            student.profileImage = `/uploads/profiles/${req.file.filename}`;
         }
 
         const newStudent = await student.save();

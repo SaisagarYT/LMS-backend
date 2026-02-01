@@ -26,6 +26,28 @@ const studentSchema = mongoose.Schema({
     phoneNumber:{
         type:String,
         required:true,
+    },
+    profileImage:{
+        type:String,
+        required:false,
+        default: null,
+    },
+    location:{
+        type:String,
+        required:false,
+    },
+    district:{
+        type:String,
+        required:false,
+    },
+    bio:{
+        type:String,
+        required:false,
+    },
+    skills:{
+        type:[String],
+        required:false,
+        default: [],
     }
 },{timestamps:true});
 module.exports = mongoose.model('Student',studentSchema);

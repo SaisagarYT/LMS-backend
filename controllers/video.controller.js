@@ -34,12 +34,10 @@ const getVideoBasedOnModule = async(req,res) =>{
     const moduleId = req.params.moduleId || req.body.moduleId;
     try{
         if(moduleId == null || moduleId == undefined){
-            return res.status(404).json({message:"Module ID is required"});
+            return res.status(400).json({message:"Module ID is required"});
         }
         const video = await Video.find({moduleId});
-        if(!video || video.length === 0){
-            return res.status(404).json({message:"No video present for the module"});
-        }
+        // Return empty array if no videos found, not 404
         return res.status(200).json(video);
     }
     catch(err){
@@ -47,4 +45,21 @@ const getVideoBasedOnModule = async(req,res) =>{
     }
 }
 
-module.exports = {createVideo,getVideoBasedOnModule}
+const getVideoById = async(req,res) =>{
+    const videoId = req.params.videoId;
+    try{
+        if(!videoId){
+            return res.status(400).json({message:"Video ID is required"});
+        }
+        const video = await Video.findById(videoId);
+        if(!video){
+            return res.status(404).json({message:"Video not found"});
+        }
+        return res.status(200).json(video);
+    }
+    catch(err){
+        return res.status(500).json({Error:"Internal server error", details: err.message});
+    }
+}
+
+module.exports = {createVideo,getVideoBasedOnModule,getVideoById}

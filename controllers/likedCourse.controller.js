@@ -2,31 +2,40 @@ const LikedCourse = require('../models/likedCourse.model');
 const Course = require('../models/course.model');
 
 const addLikedCourses = async(req,res) =>{
-    const {courseId} = req.body;
+    const {studentId, courseId} = req.body;
     try{
-        const response = await LikedCourse.findOne({courseId:courseId});
+        if (!studentId || !courseId) {
+            return res.status(400).json({message:"StudentId and CourseId are required"});
+        }
+
+        const response = await LikedCourse.findOne({studentId, courseId});
         if(response){
-            return res.status(400).json({message:"The course already present in the DB"});
+            return res.status(400).json({message:"The course is already liked by this student"});
         }
         const likedCourse = await LikedCourse.create({ 
-            courseId:courseId,
+            studentId,
+            courseId,
         });
-        return res.status(200).json(likedCourse);
+        return res.status(200).json({likedCourse, message: "Course liked successfully"});
     }
     catch(err){
-        return res.status(500).json({message:"Internal server error in likedcourse"});
+        return res.status(500).json({message:"Internal server error in likedcourse", error: err.message});
     }
 }
 
 const removeLikedCourse = async(req,res) =>{
-    const {courseId} = req.body;
+    const {studentId, courseId} = req.body;
     try{
-        const course = await LikedCourse.findOne({courseId:courseId});
-        if(!course){
-            return res.status(400).json({message:"The course not found"});
+        if (!studentId || !courseId) {
+            return res.status(400).json({message:"StudentId and CourseId are required"});
         }
-        await LikedCourse.findOneAndDelete({courseId});
-        return res.status(200).json({message:"Successfully deleted"});
+
+        const course = await LikedCourse.findOne({studentId, courseId});
+        if(!course){
+            return res.status(400).json({message:"The liked course not found"});
+        }
+        await LikedCourse.findOneAndDelete({studentId, courseId});
+        return res.status(200).json({message:"Successfully removed from liked courses"});
     }
     catch(err){
         return res.status(500).json({error:err.message});
@@ -34,15 +43,32 @@ const removeLikedCourse = async(req,res) =>{
 }
 
 const showLikedCourse = async(req,res) =>{
+    const {studentId} = req.query;
     try{
-        const likedCourse = await LikedCourse.find();
-        if(!likedCourse || likedCourse.length === 0){
-            return res.status(400).json({message:"No courses are present in the list"});
+        if (!studentId) {
+            return res.status(400).json({message:"StudentId is required"});
         }
-        return res.status(200).json({likedCourse});
+
+        const likedCourses = await LikedCourse.find({studentId}).populate('courseId');
+        return res.status(200).json({likedCourses, count: likedCourses.length});
     }
     catch(err){
-        return res.status(500).json({message:"Internal server error at showLikedCourse"});
+        return res.status(500).json({message:"Internal server error at showLikedCourse", error: err.message});
+    }
+}
+
+const checkIfLiked = async(req,res) =>{
+    const {studentId, courseId} = req.query;
+    try{
+        if (!studentId || !courseId) {
+            return res.status(400).json({message:"StudentId and CourseId are required"});
+        }
+
+        const liked = await LikedCourse.findOne({studentId, courseId});
+        return res.status(200).json({isLiked: !!liked});
+    }
+    catch(err){
+        return res.status(500).json({message:"Internal server error", error: err.message});
     }
 }
 
@@ -59,4 +85,5 @@ const collectLikedCourse = async(req,res) =>{
         return res.status(500).json({message:"Internal server error"});
     }
 }
-module.exports = {addLikedCourses,showLikedCourse,collectLikedCourse,removeLikedCourse};
+
+module.exports = {addLikedCourses,showLikedCourse,collectLikedCourse,removeLikedCourse,checkIfLiked};
