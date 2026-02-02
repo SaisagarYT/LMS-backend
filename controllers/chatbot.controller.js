@@ -8,12 +8,12 @@ const messageChatbot = async (req, res) => {
     const message = req.body;
     const id = req.params.id;
     try{
-        if(id === "new"){
+        if(id === "new" || id == null || id == undefined){
 
             const conversationId = new Conversation({
                 title:message.content
             });
-            conversationId.save();
+            await conversationId.save();
 
             const response = await ai.models.generateContent({
                 model:"gemini-2.5-flash",
